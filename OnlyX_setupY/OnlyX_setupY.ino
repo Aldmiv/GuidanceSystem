@@ -1,5 +1,3 @@
-//check
-
 #include <AccelStepper.h>
 
 // ===== Антенны =====
