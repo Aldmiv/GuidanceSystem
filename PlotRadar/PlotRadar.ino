@@ -20,8 +20,8 @@ void CalculateDirection() {
   Rvalue = analogRead(RA);
   Lvalue = analogRead(LA);
 
-  int Y = (Rvalue + Lvalue)/2; 
-  Serial.println(Y);
+  //int Y = (Rvalue + Lvalue)/2; 
+  Serial.println(Rvalue);
 }
 
 // ----------------------------------------------------------------------------
