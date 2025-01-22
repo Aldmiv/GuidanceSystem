@@ -22,7 +22,7 @@ int moveLogicY = 0;
 int potentY = 0;  // Читаем на A3
 
 unsigned long previousMillis = 0;  
-const unsigned long btwnMeasure = 60; // Периодичность считывания (мс)
+const unsigned long btwnMeasure = 50; // Периодичность считывания (мс)
 
 // ===== Параметры шагового мотора (ось X) =====
 const int X_PulPlus      = 8;    
@@ -91,7 +91,7 @@ void CalculateDirectionY() {
 // =============================
 
 // Глобальные переменные для "сканирования" по Y (каждые 20 сек для примера)
-const unsigned long verticalScanPeriod = 20000; // Каждые 20 секунд
+const unsigned long verticalScanPeriod = 10000; // Каждые 20 секунд
 unsigned long lastScanTime = 0;                 // когда была последняя попытка сканирования
 
 // Параметры «вертикального» шага
