@@ -24,7 +24,7 @@ int potentY = 0;  // Читаем на A3
 
 
 unsigned long previousMillis = 0;  
-const unsigned long btwnMeasure = 50; // Периодичность считывания (мс)
+const unsigned long btwnMeasure = 60; // Периодичность считывания (мс)
 
 // ===== Параметры шагового мотора (ось X) =====
 const int X_PulPlus      = 8;    // Пин для импульсов (шагов) оси X
