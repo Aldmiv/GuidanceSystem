@@ -4,6 +4,7 @@
 #define RA A2  // Правая антенна
 #define LA A1  // Левая антенна
 #define button 12  // кнопка
+#define buzzer 2  // пищалка
 
 int Rvalue = 0;  
 int Lvalue = 0;  
@@ -92,6 +93,15 @@ void CalculateDirectionY() {
 
 void setup() {
   Serial.begin(9600);
+
+  analogWrite(buzzer,0);
+  delay(100);
+  analogWrite(buzzer,255);
+  delay(100);
+  analogWrite(buzzer,0);
+  delay(100);
+  analogWrite(buzzer,255);
+  delay(100);
 
   pinMode(button, INPUT);
 
