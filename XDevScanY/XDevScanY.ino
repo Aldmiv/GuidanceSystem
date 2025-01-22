@@ -311,6 +311,7 @@ void loop() {
   }
 
   // ===== Управление осью X =====
+if (!isVerticalScanActive) {
   switch (moveLogicX) {
     case 0:
       stepperX.moveTo(stepperX.currentPosition());
@@ -323,6 +324,11 @@ void loop() {
       break;
   }
   stepperX.run();
+} else {
+  // Останавливаем мотор X, удерживая текущую позицию
+  stepperX.moveTo(stepperX.currentPosition());
+  stepperX.run();
+}
 
 /*
   // ===== Управление осью Y =====
