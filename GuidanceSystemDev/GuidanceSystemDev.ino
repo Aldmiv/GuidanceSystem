@@ -95,8 +95,8 @@ const unsigned long verticalScanPeriod = 10000; // Каждые 20 секунд
 unsigned long lastScanTime = 0;                 // когда была последняя попытка сканирования
 
 // Параметры «вертикального» шага
-const long totalScanSteps  = 800;   // всего шагов "вперёд"
-const unsigned long signalMeasureInterval = 100; // Интервал времени для замера сигнала (мс)
+const long totalScanSteps  = 700;   // всего шагов "вперёд"
+const unsigned long signalMeasureInterval = 60; // Интервал времени для замера сигнала (мс)
 unsigned long lastSignalMeasureTime = 0;         // Последнее время замера сигнала
 long bestSignal = -9999;           // Лучший сигнал
 long bestPosition = 0;             // Позиция с лучшим сигналом
@@ -112,7 +112,7 @@ void startVerticalScan() {
   isReturningToStart = true;
 
   // Двигаемся к кнопке (вниз)
-  stepperY.setSpeed(-1000);
+  stepperY.setSpeed(-1300);
   stepperY.moveTo(-999999); // Двигаемся до упора
 }
 
@@ -266,7 +266,8 @@ void loop() {
     CalculateDirectionY();
   }
 
-  // ===== Управление осью X =====
+/*
+  // ===== Управление осью X (запрещено движение по x во время сканирования по вертикали) =====
   if (!isVerticalScanActive && !isReturningToStart) {
     switch (moveLogicX) {
       case 0:
@@ -285,6 +286,22 @@ void loop() {
     stepperX.moveTo(stepperX.currentPosition());
     stepperX.run();
   }
+  */
+  
+  // ===== Управление осью X (разрешено движение по x во время сканирования по вертикали) =====
+    switch (moveLogicX) {
+      case 0:
+        stepperX.moveTo(stepperX.currentPosition());
+        break;
+      case 1:
+        stepperX.moveTo(1000000);
+        break;
+      case 2:
+        stepperX.moveTo(-1000000);
+        break;
+    }
+    stepperX.run();
+
 
   stepperY.run();
 
