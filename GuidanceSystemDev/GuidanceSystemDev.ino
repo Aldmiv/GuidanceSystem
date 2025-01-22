@@ -29,8 +29,8 @@ const unsigned long btwnMeasure = 50; // Периодичность считыв
 // ===== Параметры шагового мотора (ось X) =====
 const int X_PulPlus      = 8;    // Пин для импульсов (шагов) оси X
 const int X_DirPlus      = 9;    // Пин для направления оси X
-const float maxSpeedX     = 2500; // Макс. скорость (шаг/с) для X
-const float accelerationX = 2000; // Ускорение (шаг/с^2) для X
+const float maxSpeedX     = 3000; // Макс. скорость (шаг/с) для X
+const float accelerationX = 2900; // Ускорение (шаг/с^2) для X
 
 // Создаём объект класса AccelStepper для оси X
 AccelStepper stepperX(AccelStepper::DRIVER, X_PulPlus, X_DirPlus);
