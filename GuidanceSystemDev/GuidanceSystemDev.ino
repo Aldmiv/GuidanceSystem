@@ -229,7 +229,7 @@ void setup() {
 
 void loop() {
 
-  // Эта строка всегда должна быть в коде для обработки событий / This line must always be present in the code to handle events
+  // Эта строка всегда должна быть в коде для обработки событий
   ParadigmaScreens.update();
   bluetoothControl();
 
@@ -283,6 +283,7 @@ void loop() {
 
 void bluetoothControl() {
 
+//исправить
   if (ParadigmaScreens.button[1]) {
 maxSpeedX = maxSpeedX - 10;
 ParadigmaScreens.sendText(2, maxSpeedX);
