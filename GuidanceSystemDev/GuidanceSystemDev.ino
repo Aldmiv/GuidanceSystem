@@ -76,7 +76,14 @@ void CalculateDirectionY() {
 }
 
 void startVerticalScan() {
+  Serial.println((Rvalue + Lvalue) / 2);
   if (isVerticalScanActive || isReturningToStart) return;
+
+  // Проверяем условие по среднему сигналу
+  if ((Rvalue + Lvalue) / 2 < 4) {
+    Serial.println("DEBUG: Signal too low, skipping vertical scan");
+    return;
+  }
 
   Serial.println("DEBUG: Returning to start position");
   isReturningToStart = true;

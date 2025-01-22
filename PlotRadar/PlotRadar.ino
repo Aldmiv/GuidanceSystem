@@ -21,7 +21,7 @@ void CalculateDirection() {
   Lvalue = analogRead(LA);
 
   //int Y = (Rvalue + Lvalue)/2; 
-  Serial.println(Rvalue);
+  Serial.println(Lvalue);
 }
 
 // ----------------------------------------------------------------------------
