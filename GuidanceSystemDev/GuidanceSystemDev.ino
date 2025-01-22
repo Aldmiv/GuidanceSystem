@@ -78,15 +78,17 @@ void CalculateDirectionY() {
   Serial.print(potentY);
 
   if (potentY < 100) {
-    Serial.println(" => Y UP (plus)");
+    //Serial.println(" => Y UP (plus)");
     moveLogicY = 1; 
   }
-  else if (potentY > 1000) {
-    Serial.println(" => Y DOWN (minus)");
+  
+  if (potentY > 1000) {
+    //Serial.println(" => Y DOWN (minus)");
     moveLogicY = 2;
   }
-  else {
-    Serial.println(" => Y STOP");
+  
+  if((potentY >= 100) && (potentY <= 1000)) {
+    //Serial.println(" => Y STOP");
     moveLogicY = 0; // Стоп
   }
 }
