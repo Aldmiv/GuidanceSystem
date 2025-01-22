@@ -6,4 +6,6 @@ GuidanceSystemDev - Код в разработке
 
 PlotRadar - Вывод ацп на графики
 
+XDevScanY - Движется по x, сканирует по y через интервал
+
 AccelStepper - V1.64
