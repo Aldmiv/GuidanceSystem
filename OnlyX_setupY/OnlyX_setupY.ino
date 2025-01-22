@@ -4,6 +4,7 @@
 #define RA A2  // Правая антенна
 #define LA A1  // Левая антенна
 #define button 12  // кнопка
+#define buzzer 2  // пищалка
 
 int Rvalue = 0;  
 int Lvalue = 0;  
@@ -23,13 +24,13 @@ int potentY = 0;  // Читаем на A3
 
 
 unsigned long previousMillis = 0;  
-const unsigned long btwnMeasure = 50; // Периодичность считывания (мс)
+const unsigned long btwnMeasure = 60; // Периодичность считывания (мс)
 
 // ===== Параметры шагового мотора (ось X) =====
 const int X_PulPlus      = 8;    // Пин для импульсов (шагов) оси X
 const int X_DirPlus      = 9;    // Пин для направления оси X
-const float maxSpeedX     = 2500; // Макс. скорость (шаг/с) для X
-const float accelerationX = 2000; // Ускорение (шаг/с^2) для X
+const float maxSpeedX     = 3000; // Макс. скорость (шаг/с) для X
+const float accelerationX = 2900; // Ускорение (шаг/с^2) для X
 
 // Создаём объект класса AccelStepper для оси X
 AccelStepper stepperX(AccelStepper::DRIVER, X_PulPlus, X_DirPlus);
@@ -72,26 +73,40 @@ void CalculateDirectionX() {
 // Временная логика определения moveLogicY на основе потенциометра A3
 // ----------------------------------------------------------------------------
 void CalculateDirectionY() {
+
+/*
   potentY = analogRead(A3);
   Serial.print("potentY = ");
   Serial.print(potentY);
 
   if (potentY < 100) {
-    Serial.println(" => Y UP (plus)");
+    //Serial.println(" => Y UP (plus)");
     moveLogicY = 1; 
   }
-  else if (potentY > 1000) {
-    Serial.println(" => Y DOWN (minus)");
+  
+  if (potentY > 1000) {
+    //Serial.println(" => Y DOWN (minus)");
     moveLogicY = 2;
   }
-  else {
-    Serial.println(" => Y STOP");
+  
+  if((potentY >= 100) && (potentY <= 1000)) {
+    //Serial.println(" => Y STOP");
     moveLogicY = 0; // Стоп
   }
+  */
 }
 
 void setup() {
   Serial.begin(9600);
+
+  analogWrite(buzzer,0);
+  delay(100);
+  analogWrite(buzzer,255);
+  delay(100);
+  analogWrite(buzzer,0);
+  delay(100);
+  analogWrite(buzzer,255);
+  delay(100);
 
   pinMode(button, INPUT);
 
@@ -126,9 +141,9 @@ void setup() {
   stepperY.setAcceleration(300); 
 
   // Двигаем в обратную сторону
-  unsigned long startBack = millis();
-  stepperY.moveTo(stepperY.currentPosition() + 100000);
-  while (millis() - startBack < 1500) {
+  long stepsToMove = 400;  // измените, если нужно больше/меньше
+  stepperY.moveTo(stepperY.currentPosition() + stepsToMove);
+  while (stepperY.distanceToGo() != 0) {
     stepperY.run();
   }
 

@@ -73,6 +73,8 @@ void CalculateDirectionX() {
 // Временная логика определения moveLogicY на основе потенциометра A3
 // ----------------------------------------------------------------------------
 void CalculateDirectionY() {
+
+/*
   potentY = analogRead(A3);
   Serial.print("potentY = ");
   Serial.print(potentY);
@@ -91,6 +93,7 @@ void CalculateDirectionY() {
     //Serial.println(" => Y STOP");
     moveLogicY = 0; // Стоп
   }
+  */
 }
 
 void setup() {
