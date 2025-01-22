@@ -126,9 +126,9 @@ void setup() {
   stepperY.setAcceleration(300); 
 
   // Двигаем в обратную сторону
-  unsigned long startBack = millis();
-  stepperY.moveTo(stepperY.currentPosition() + 100000);
-  while (millis() - startBack < 1500) {
+  long stepsToMove = 400;  // измените, если нужно больше/меньше
+  stepperY.moveTo(stepperY.currentPosition() + stepsToMove);
+  while (stepperY.distanceToGo() != 0) {
     stepperY.run();
   }
 
