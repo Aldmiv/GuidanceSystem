@@ -105,24 +105,31 @@ const char index_html[] PROGMEM = R"rawliteral(
   <p><strong>Upper Antenna:</strong> <span id="UA">0</span></p>
   <p><strong>Down Antenna:</strong> <span id="DA">0</span></p>
 
+  <br>
   <p><strong>Max Speed X:</strong> <span id="maxSpeedX">0.0</span></p>
   <p>Set Max Speed X: <input type="text" id="maxSpeedXInput" placeholder="Enter value"> <button onclick="updateMaxSpeedX()">Update</button></p>
 
+  <br>
   <p><strong>Acceleration X:</strong> <span id="accelerationX">0.0</span></p>
   <p>Set Acceleration X: <input type="text" id="accelerationXInput" placeholder="Enter value"> <button onclick="updateAccelerationX()">Update</button></p>
 
+  <br>
   <p><strong>Max Speed Y:</strong> <span id="maxSpeedY">0.0</span></p>
   <p>Set Max Speed Y: <input type="text" id="maxSpeedYInput" placeholder="Enter value"> <button onclick="updateMaxSpeedY()">Update</button></p>
 
+  <br>
   <p><strong>Acceleration Y:</strong> <span id="accelerationY">0.0</span></p>
   <p>Set Acceleration Y: <input type="text" id="accelerationYInput" placeholder="Enter value"> <button onclick="updateAccelerationY()">Update</button></p>
 
+  <br>
   <p><strong>Dead Band X:</strong> <span id="DeadBandX">0</span></p>
   <p>Set Dead Band X: <input type="text" id="DeadBandXInput" placeholder="Enter value"> <button onclick="updateDeadBandX()">Update</button></p>
 
+  <br>
   <p><strong>Dead Band Y:</strong> <span id="DeadBandY">0</span></p>
   <p>Set Dead Band Y: <input type="text" id="DeadBandYInput" placeholder="Enter value"> <button onclick="updateDeadBandY()">Update</button></p>
 
+  <br>
   <p><strong>Between Measure:</strong> <span id="btwnMeasure">0</span></p>
   <p>Set Between Measure: <input type="text" id="btwnMeasureInput" placeholder="Enter value"> <button onclick="updateBtwnMeasure()">Update</button></p>
 </body>
