@@ -19,9 +19,11 @@ ESP:
 
 4ADC_serial - вывод значений с 4х каналов АЦП в serial
 
-4ADC_serial_web_point вывод значений с 4х каналов АЦП в serial и в браузер
+4ADC_serial_web_point - вывод значений с 4х каналов АЦП в serial и в браузер
 
-4ADC_serial_web_point_input вывод значений с 4х каналов АЦП в serial и в браузер. Возможность изменять переменные
+4ADC_serial_web_point_input - вывод значений с 4х каналов АЦП в serial и в браузер. Возможность изменять переменные
+
+4ADC_serial_web_point_input_switch - web новое управление
 
 Libraries and boards:
 
