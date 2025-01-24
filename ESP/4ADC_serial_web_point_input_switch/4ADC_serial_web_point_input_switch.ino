@@ -3,7 +3,7 @@
 
 // Настройка Wi-Fi точки доступа
 const char *ssid = "ESP32";
-const char *password = "12345678";
+const char *password = "8467239547495";
 
 IPAddress local_ip(192, 168, 4, 1);
 IPAddress gateway(192, 168, 4, 1);
@@ -110,7 +110,7 @@ const char index_html[] PROGMEM = R"rawliteral(
       height: 20px;
     }
   </style>
-  <script>
+<script>
     async function refreshValues() {
       const response = await fetch('/values');
       const data = await response.json();
@@ -128,6 +128,20 @@ const char index_html[] PROGMEM = R"rawliteral(
       document.getElementById('DeadBandY').innerText = data.DeadBandY;
       document.getElementById('btwnMeasure').innerText = data.btwnMeasure;
       document.getElementById('AllowMoving').innerText = data.AllowMoving ? "Enabled" : "Disabled";
+
+      // Обновляем положение кружочка
+      const dot = document.querySelector('.dot');
+      const maxOffset = 100; // Половина ширины/высоты перекрестия (визуально 100 пикселей)
+      const maxValue = 2000; // Максимальные значения DX и DY
+
+      // Рассчитываем нормализованное значение для X
+      const x = Math.min(Math.max((data.DX / maxValue) * maxOffset, -maxOffset), maxOffset);
+      // Рассчитываем нормализованное значение для Y (инвертируем направление)
+      const y = Math.min(Math.max((-data.DY / maxValue) * maxOffset, -maxOffset), maxOffset);
+
+      // Устанавливаем позиции точки относительно центра перекрестия
+      dot.style.left = `${x + maxOffset}px`; // Центрируем точку по X
+      dot.style.top = `${y + maxOffset}px`; // Центрируем точку по Y
     }
 
     async function updateMaxSpeedX() {
@@ -171,7 +185,8 @@ const char index_html[] PROGMEM = R"rawliteral(
     }
 
     setInterval(refreshValues, 50); // Обновление каждые 50 мс
-  </script>
+</script>
+
 </head>
 <body>
   <div class="container">
