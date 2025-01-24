@@ -42,11 +42,67 @@ const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>GuidanceSystem</title>
+  <title>Guidance System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
   <style>
+    body {
+      background-color: #202020;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden; /* Полностью убираем горизонтальный скролл */
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      background: #303030;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: auto; /* Ширина автоматически подстраивается под содержимое */
+      max-width: 100%; /* Контейнер не выходит за пределы окна */
+      margin: 0 auto; /* Центрируем контейнер */
+    }
+    .row {
+      display: flex;
+      justify-content: flex-start; /* Выравнивание по левому краю */
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px; /* Пространство между элементами */
+      flex-wrap: wrap; /* Перенос элементов на новую строку при необходимости */
+    }
+    .row strong {
+      font-size: 1rem;
+      flex: 0 0 auto; /* Текст занимает только необходимое место */
+      min-width: 120px; /* Минимальная ширина текста */
+    }
+    .row input {
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      width: 150px; /* Фиксированная ширина для полей ввода */
+    }
+    .row button {
+      padding: 5px 15px; /* Компактный размер кнопок */
+      border-radius: 5px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0; /* Кнопки не сжимаются */
+    }
+    .row button:hover {
+      background: #0056b3;
+    }
     #AllowMovingSwitch {
-      width: 60px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
     }
   </style>
   <script>
@@ -111,44 +167,75 @@ const char index_html[] PROGMEM = R"rawliteral(
   </script>
 </head>
 <body>
-  <h1>Guidance System</h1>
+  <div class="container">
+    <h1>Guidance System</h1>
 
-  <h2>Antenna Signals</h2>
-  <p><strong>Right Antenna:</strong> <span id="RA">0</span></p>
-  <p><strong>Left Antenna:</strong> <span id="LA">0</span></p>
-  <p><strong>Upper Antenna:</strong> <span id="UA">0</span></p>
-  <p><strong>Down Antenna:</strong> <span id="DA">0</span></p>
+    <div class="row">
+      <strong>Right Antenna:</strong> <span id="RA">0</span>
+    </div>
+    <div class="row">
+      <strong>Left Antenna:</strong> <span id="LA">0</span>
+    </div>
+    <div class="row">
+      <strong>Upper Antenna:</strong> <span id="UA">0</span>
+    </div>
+    <div class="row">
+      <strong>Down Antenna:</strong> <span id="DA">0</span>
+    </div>
 
-  <br>
-  <p><strong>Emergency Stop:</strong> <input type="checkbox" id="AllowMovingSwitch" onchange="updateAllowMoving()"></p>
+    <div class="row">
+      <strong>Emergency Stop:</strong> <input type="checkbox" id="AllowMovingSwitch" onchange="updateAllowMoving()">
+    </div>
 
-  <br>
-  <p><strong>Max Speed X:</strong> <span id="maxSpeedX">0.0</span></p>
-  <p>Set Max Speed X: <input type="text" id="maxSpeedXInput" placeholder="Enter value"> <button onclick="updateMaxSpeedX()">Update</button></p>
+    <div class="row">
+      <strong>Max Speed X:</strong> <span id="maxSpeedX">0.0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="maxSpeedXInput" placeholder="Enter value"> <button onclick="updateMaxSpeedX()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Acceleration X:</strong> <span id="accelerationX">0.0</span></p>
-  <p>Set Acceleration X: <input type="text" id="accelerationXInput" placeholder="Enter value"> <button onclick="updateAccelerationX()">Update</button></p>
+    <div class="row">
+      <strong>Acceleration X:</strong> <span id="accelerationX">0.0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="accelerationXInput" placeholder="Enter value"> <button onclick="updateAccelerationX()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Max Speed Y:</strong> <span id="maxSpeedY">0.0</span></p>
-  <p>Set Max Speed Y: <input type="text" id="maxSpeedYInput" placeholder="Enter value"> <button onclick="updateMaxSpeedY()">Update</button></p>
+    <div class="row">
+      <strong>Max Speed Y:</strong> <span id="maxSpeedY">0.0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="maxSpeedYInput" placeholder="Enter value"> <button onclick="updateMaxSpeedY()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Acceleration Y:</strong> <span id="accelerationY">0.0</span></p>
-  <p>Set Acceleration Y: <input type="text" id="accelerationYInput" placeholder="Enter value"> <button onclick="updateAccelerationY()">Update</button></p>
+    <div class="row">
+      <strong>Acceleration Y:</strong> <span id="accelerationY">0.0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="accelerationYInput" placeholder="Enter value"> <button onclick="updateAccelerationY()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Dead Band X:</strong> <span id="DeadBandX">0</span></p>
-  <p>Set Dead Band X: <input type="text" id="DeadBandXInput" placeholder="Enter value"> <button onclick="updateDeadBandX()">Update</button></p>
+    <div class="row">
+      <strong>Dead Band X:</strong> <span id="DeadBandX">0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="DeadBandXInput" placeholder="Enter value"> <button onclick="updateDeadBandX()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Dead Band Y:</strong> <span id="DeadBandY">0</span></p>
-  <p>Set Dead Band Y: <input type="text" id="DeadBandYInput" placeholder="Enter value"> <button onclick="updateDeadBandY()">Update</button></p>
+    <div class="row">
+      <strong>Dead Band Y:</strong> <span id="DeadBandY">0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="DeadBandYInput" placeholder="Enter value"> <button onclick="updateDeadBandY()">Update</button>
+    </div>
 
-  <br>
-  <p><strong>Between Measure:</strong> <span id="btwnMeasure">0</span></p>
-  <p>Set Between Measure: <input type="text" id="btwnMeasureInput" placeholder="Enter value"> <button onclick="updateBtwnMeasure()">Update</button></p>
+    <div class="row">
+      <strong>Between Measure:</strong> <span id="btwnMeasure">0</span>
+    </div>
+    <div class="row">
+      <input type="text" id="btwnMeasureInput" placeholder="Enter value"> <button onclick="updateBtwnMeasure()">Update</button>
+    </div>
+  </div>
 </body>
 </html>
 )rawliteral";
