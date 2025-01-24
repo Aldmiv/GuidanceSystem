@@ -16,6 +16,7 @@ const int RA = 36;  // Правая антенна
 const int LA = 39;  // Левая антенна
 const int UA = 34;  // Верхняя антенна
 const int DA = 35;  // Нижняя антенна
+const int button = 15; // Кнопка digitalRead(button);
 
 // Значения сигналов с антенн
 volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0;     // Непрерывные данные
@@ -256,6 +257,8 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 void setup() {
   Serial.begin(9600);
+
+  pinMode(button, INPUT_PULLUP);
 
   // Настройка Wi-Fi точки доступа
   WiFi.softAPConfig(local_ip, gateway, subnet);
