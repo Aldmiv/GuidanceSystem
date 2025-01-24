@@ -19,5 +19,7 @@ ESP:
 
 4ADC_serial - вывод значений с 4х каналов АЦП в serial
 
+4ADC_serial_web_point вывод значений с 4х каналов АЦП в serial и в браузер
+
 Libraries and boards:
 esp32 by Espressif Systems - V3.1.1
