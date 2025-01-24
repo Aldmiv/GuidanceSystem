@@ -1,8 +1,8 @@
 // Входы АЦП
 const int potPin1 = 34;
 const int potPin2 = 35;
-const int potPin3 = 25;
-const int potPin4 = 26;
+const int potPin3 = 36;
+const int potPin4 = 39;
 
 void setup() {
   Serial.begin(9600);
