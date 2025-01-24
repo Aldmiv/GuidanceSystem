@@ -27,6 +27,10 @@ float accelerationX = 2900.0;
 float maxSpeedY = 2500.0;
 float accelerationY = 2000.0;
 
+int DeadBandX = 20;
+int DeadBandY = 20;
+int btwnMeasure = 60; // Периодичность считывания (мс)
+
 // Таймер для обновления значений
 unsigned long previousMillis = 0;
 const unsigned long interval = 50; // Интервал вывода значений в веб
@@ -49,6 +53,9 @@ const char index_html[] PROGMEM = R"rawliteral(
       document.getElementById('accelerationX').innerText = data.accelerationX;
       document.getElementById('maxSpeedY').innerText = data.maxSpeedY;
       document.getElementById('accelerationY').innerText = data.accelerationY;
+      document.getElementById('DeadBandX').innerText = data.DeadBandX;
+      document.getElementById('DeadBandY').innerText = data.DeadBandY;
+      document.getElementById('btwnMeasure').innerText = data.btwnMeasure;
     }
 
     async function updateMaxSpeedX() {
@@ -69,6 +76,21 @@ const char index_html[] PROGMEM = R"rawliteral(
     async function updateAccelerationY() {
       const input = document.getElementById('accelerationYInput').value;
       await fetch(`/updateAccelerationY?value=${input}`);
+    }
+
+    async function updateDeadBandX() {
+      const input = document.getElementById('DeadBandXInput').value;
+      await fetch(`/updateDeadBandX?value=${input}`);
+    }
+
+    async function updateDeadBandY() {
+      const input = document.getElementById('DeadBandYInput').value;
+      await fetch(`/updateDeadBandY?value=${input}`);
+    }
+
+    async function updateBtwnMeasure() {
+      const input = document.getElementById('btwnMeasureInput').value;
+      await fetch(`/updateBtwnMeasure?value=${input}`);
     }
 
     setInterval(refreshValues, 50); // Обновление каждые 50 мс
@@ -94,6 +116,15 @@ const char index_html[] PROGMEM = R"rawliteral(
 
   <p><strong>Acceleration Y:</strong> <span id="accelerationY">0.0</span></p>
   <p>Set Acceleration Y: <input type="text" id="accelerationYInput" placeholder="Enter value"> <button onclick="updateAccelerationY()">Update</button></p>
+
+  <p><strong>Dead Band X:</strong> <span id="DeadBandX">0</span></p>
+  <p>Set Dead Band X: <input type="text" id="DeadBandXInput" placeholder="Enter value"> <button onclick="updateDeadBandX()">Update</button></p>
+
+  <p><strong>Dead Band Y:</strong> <span id="DeadBandY">0</span></p>
+  <p>Set Dead Band Y: <input type="text" id="DeadBandYInput" placeholder="Enter value"> <button onclick="updateDeadBandY()">Update</button></p>
+
+  <p><strong>Between Measure:</strong> <span id="btwnMeasure">0</span></p>
+  <p>Set Between Measure: <input type="text" id="btwnMeasureInput" placeholder="Enter value"> <button onclick="updateBtwnMeasure()">Update</button></p>
 </body>
 </html>
 )rawliteral";
@@ -124,7 +155,10 @@ void setup() {
     json += "\"maxSpeedX\":" + String(maxSpeedX) + ",";
     json += "\"accelerationX\":" + String(accelerationX) + ",";
     json += "\"maxSpeedY\":" + String(maxSpeedY) + ",";
-    json += "\"accelerationY\":" + String(accelerationY);
+    json += "\"accelerationY\":" + String(accelerationY) + ",";
+    json += "\"DeadBandX\":" + String(DeadBandX) + ",";
+    json += "\"DeadBandY\":" + String(DeadBandY) + ",";
+    json += "\"btwnMeasure\":" + String(btwnMeasure);
     json += "}";
     request->send(200, "application/json", json);
   });
@@ -165,6 +199,36 @@ void setup() {
       accelerationY = request->getParam("value")->value().toFloat();
       Serial.print("Updated accelerationY to: ");
       Serial.println(accelerationY);
+    }
+    request->send(200, "text/plain", "OK");
+  });
+
+  // Обработка обновления DeadBandX
+  server.on("/updateDeadBandX", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("value")) {
+      DeadBandX = request->getParam("value")->value().toInt();
+      Serial.print("Updated DeadBandX to: ");
+      Serial.println(DeadBandX);
+    }
+    request->send(200, "text/plain", "OK");
+  });
+
+  // Обработка обновления DeadBandY
+  server.on("/updateDeadBandY", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("value")) {
+      DeadBandY = request->getParam("value")->value().toInt();
+      Serial.print("Updated DeadBandY to: ");
+      Serial.println(DeadBandY);
+    }
+    request->send(200, "text/plain", "OK");
+  });
+
+  // Обработка обновления btwnMeasure
+  server.on("/updateBtwnMeasure", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("value")) {
+      btwnMeasure = request->getParam("value")->value().toInt();
+      Serial.print("Updated btwnMeasure to: ");
+      Serial.println(btwnMeasure);
     }
     request->send(200, "text/plain", "OK");
   });
