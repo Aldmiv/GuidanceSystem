@@ -21,5 +21,8 @@ ESP:
 
 4ADC_serial_web_point вывод значений с 4х каналов АЦП в serial и в браузер
 
+4ADC_serial_web_point_input вывод значений с 4х каналов АЦП в serial и в браузер. Возможность изменять переменные
+
 Libraries and boards:
+
 esp32 by Espressif Systems - V3.1.1
