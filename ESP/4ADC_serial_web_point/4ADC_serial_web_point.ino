@@ -11,39 +11,44 @@ IPAddress subnet(255, 255, 255, 0);
 
 AsyncWebServer server(80); // Асинхронный веб-сервер
 
-// Входы АЦП
-const int potPin1 = 34;
-const int potPin2 = 35;
-const int potPin3 = 36;
-const int potPin4 = 39;
+// Входы АЦП для антенн
+const int RA = 36; // Правая антенна
+const int LA = 39; // Левая антенна
+const int UA = 34; // Верхняя антенна
+const int DA = 35; // Нижняя антенна
 
-// Значения потенциометров
-int val1 = 0, val2 = 0, val3 = 0, val4 = 0;
+// Значения сигналов с антенн
+volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0; // Непрерывные данные
+int RvalueWeb = 0, LvalueWeb = 0, UvalueWeb = 0, DvalueWeb = 0; // Данные для веб-сервера
+
+// Таймер для обновления значений
+unsigned long previousMillis = 0;
+const unsigned long interval = 50; // Интервал вывода в миллисекундах
 
 // HTML веб-страницы
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Guidance System</title>
+  <title>Antenna Signals</title>
   <script>
     async function refreshValues() {
       const response = await fetch('/values');
       const data = await response.json();
-      document.getElementById('p1').innerText = data.p1;
-      document.getElementById('p2').innerText = data.p2;
-      document.getElementById('p3').innerText = data.p3;
-      document.getElementById('p4').innerText = data.p4;
+      document.getElementById('RA').innerText = data.RA;
+      document.getElementById('LA').innerText = data.LA;
+      document.getElementById('UA').innerText = data.UA;
+      document.getElementById('DA').innerText = data.DA;
     }
-    setInterval(refreshValues, 500); // Обновление каждые 500 мс
+    setInterval(refreshValues, interval); // Обновление каждые 50 мс
   </script>
 </head>
 <body>
-  <h1>ESP32 Potentiometer Values</h1>
-  <p><strong>Potentiometer 1:</strong> <span id="p1">0</span></p>
-  <p><strong>Potentiometer 2:</strong> <span id="p2">0</span></p>
-  <p><strong>Potentiometer 3:</strong> <span id="p3">0</span></p>
-  <p><strong>Potentiometer 4:</strong> <span id="p4">0</span></p>
+  <h1>ESP32 Antenna Signals</h1>
+  <p><strong>Right Antenna:</strong> <span id="RA">0</span></p>
+  <p><strong>Left Antenna:</strong> <span id="LA">0</span></p>
+  <p><strong>Upper Antenna:</strong> <span id="UA">0</span></p>
+  <p><strong>Down Antenna:</strong> <span id="DA">0</span></p>
 </body>
 </html>
 )rawliteral";
@@ -64,13 +69,13 @@ void setup() {
     request->send_P(200, "text/html", index_html);
   });
 
-  // Обработка запроса значений потенциометров
+  // Обработка запроса значений сигналов антенн
   server.on("/values", HTTP_GET, [](AsyncWebServerRequest *request) {
     String json = "{";
-    json += "\"p1\":" + String(val1) + ",";
-    json += "\"p2\":" + String(val2) + ",";
-    json += "\"p3\":" + String(val3) + ",";
-    json += "\"p4\":" + String(val4);
+    json += "\"RA\":" + String(RvalueWeb) + ",";
+    json += "\"LA\":" + String(LvalueWeb) + ",";
+    json += "\"UA\":" + String(UvalueWeb) + ",";
+    json += "\"DA\":" + String(DvalueWeb);
     json += "}";
     request->send(200, "application/json", json);
   });
@@ -81,21 +86,31 @@ void setup() {
 }
 
 void loop() {
-  // Считываем значения с потенциометров
-  val1 = analogRead(potPin1);
-  val2 = analogRead(potPin2);
-  val3 = analogRead(potPin3);
-  val4 = analogRead(potPin4);
+  // Непрерывное считывание сигналов с антенн
+  Rvalue = analogRead(RA);
+  Lvalue = analogRead(LA);
+  Uvalue = analogRead(UA);
+  Dvalue = analogRead(DA);
 
-  // Выводим результаты в Serial Monitor
-  Serial.print("P1: ");
-  Serial.print(val1);
-  Serial.print("\tP2: ");
-  Serial.print(val2);
-  Serial.print("\tP3: ");
-  Serial.print(val3);
-  Serial.print("\tP4: ");
-  Serial.println(val4);
+  // Обновление значений для вывода каждые 50 мс
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
 
- // delay(200); // Небольшая задержка
+    // Копируем значения в переменные для вывода
+    RvalueWeb = Rvalue;
+    LvalueWeb = Lvalue;
+    UvalueWeb = Uvalue;
+    DvalueWeb = Dvalue;
+
+    // Выводим результаты в Serial Monitor (для отладки)
+    Serial.print("RA: ");
+    Serial.print(RvalueWeb);
+    Serial.print("\tLA: ");
+    Serial.print(LvalueWeb);
+    Serial.print("\tUA: ");
+    Serial.print(UvalueWeb);
+    Serial.print("\tDA: ");
+    Serial.println(DvalueWeb);
+  }
 }
