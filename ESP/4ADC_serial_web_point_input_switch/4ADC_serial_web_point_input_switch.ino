@@ -9,17 +9,21 @@ IPAddress local_ip(192, 168, 4, 1);
 IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-AsyncWebServer server(80); // Асинхронный веб-сервер
+AsyncWebServer server(80);  // Асинхронный веб-сервер
 
 // Входы АЦП для антенн
-const int RA = 36; // Правая антенна
-const int LA = 39; // Левая антенна
-const int UA = 34; // Верхняя антенна
-const int DA = 35; // Нижняя антенна
+const int RA = 36;  // Правая антенна
+const int LA = 39;  // Левая антенна
+const int UA = 34;  // Верхняя антенна
+const int DA = 35;  // Нижняя антенна
 
 // Значения сигналов с антенн
-volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0; // Непрерывные данные
-int RvalueWeb = 0, LvalueWeb = 0, UvalueWeb = 0, DvalueWeb = 0; // Данные для веб-сервера
+volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0;     // Непрерывные данные
+int RvalueWeb = 0, LvalueWeb = 0, UvalueWeb = 0, DvalueWeb = 0;  // Данные для веб-сервера
+
+// Разница между парой антенн
+int DX = 0;
+int DY = 0;
 
 float maxSpeedX = 3000.0;
 float accelerationX = 2900.0;
@@ -29,13 +33,13 @@ float accelerationY = 2000.0;
 
 int DeadBandX = 20;
 int DeadBandY = 20;
-int btwnMeasure = 60; // Периодичность считывания (мс)
+int btwnMeasure = 60;  // Периодичность считывания (мс)
 
 bool AllowMoving = true;
 
 // Таймер для обновления значений
 unsigned long previousMillis = 0;
-const unsigned long interval = 50; // Интервал вывода значений в веб
+const unsigned long interval = 100;  // Интервал обновления значений для веба
 
 // HTML веб-страницы
 const char index_html[] PROGMEM = R"rawliteral(
@@ -113,6 +117,8 @@ const char index_html[] PROGMEM = R"rawliteral(
       document.getElementById('LA').innerText = data.LA;
       document.getElementById('UA').innerText = data.UA;
       document.getElementById('DA').innerText = data.DA;
+      document.getElementById('DX').innerText = data.DX;
+      document.getElementById('DY').innerText = data.DY;
       document.getElementById('maxSpeedX').innerText = data.maxSpeedX;
       document.getElementById('accelerationX').innerText = data.accelerationX;
       document.getElementById('maxSpeedY').innerText = data.maxSpeedY;
@@ -182,6 +188,14 @@ const char index_html[] PROGMEM = R"rawliteral(
     <div class="row">
       <strong>Down Antenna:</strong> <span id="DA">0</span>
     </div>
+
+    <div class="row">
+      <strong>DX:</strong> <span id="DX">0</span>
+    </div>
+    <div class="row">
+      <strong>DY:</strong> <span id="DY">0</span>
+    </div>
+
 
     <div class="row">
       <strong>Emergency Stop:</strong> <input type="checkbox" id="AllowMovingSwitch" onchange="updateAllowMoving()">
@@ -263,6 +277,8 @@ void setup() {
     json += "\"LA\":" + String(LvalueWeb) + ",";
     json += "\"UA\":" + String(UvalueWeb) + ",";
     json += "\"DA\":" + String(DvalueWeb) + ",";
+    json += "\"DX\":" + String(DX) + ",";
+    json += "\"DY\":" + String(DY) + ",";
     json += "\"maxSpeedX\":" + String(maxSpeedX) + ",";
     json += "\"accelerationX\":" + String(accelerationX) + ",";
     json += "\"maxSpeedY\":" + String(maxSpeedY) + ",";
@@ -360,7 +376,11 @@ void loop() {
   Uvalue = analogRead(UA);
   Dvalue = analogRead(DA);
 
-  // Обновление значений для вывода каждые 50 мс
+  DX = Rvalue - Lvalue;
+  DY = Uvalue - Dvalue;
+
+
+  // Обновление значений для вывода каждые interval мс
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
