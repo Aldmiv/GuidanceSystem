@@ -12,12 +12,12 @@ XDevScanY - Движется по x, сканирует по y через инт
 
 AllScanByTime - Движется по x, сканирует по y через интервал но через промежуток времени а не по шагам (плавнее)
 
-
+Libraries:
+AccelStepper - V1.64
 
 ESP:
 
 4ADC_serial - вывод значений с 4х каналов АЦП в serial
 
-
-Libraries:
-AccelStepper - V1.64
+Libraries and boards:
+esp32 by Espressif Systems - V3.1.1
