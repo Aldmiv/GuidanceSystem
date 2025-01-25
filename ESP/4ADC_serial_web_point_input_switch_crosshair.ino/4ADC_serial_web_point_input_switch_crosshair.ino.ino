@@ -104,9 +104,24 @@ const char index_html[] PROGMEM = R"rawliteral(
     .row button:hover {
       background: #0056b3;
     }
+
+    /* NEW: контейнер для Emergency Stop */
+    .emergency-container {
+      display: flex;
+      flex-direction: column; 
+      align-items: center;   /* Центровка по горизонтали */
+      margin: 20px 0;       /* Отступы сверху/снизу */
+    }
+    .emergency-container h2 {
+      font-size: 1.5rem;    /* Увеличенный размер шрифта */
+      margin: 0 0 10px 0;   /* Отступ после заголовка */
+    }
+
+    /* NEW: увеличенный размер чекбокса */
     #AllowMovingSwitch {
-      width: 20px;
-      height: 20px;
+      width: 40px; 
+      height: 40px;
+      cursor: pointer;      /* Указатель при наведении */
     }
 
     /* Контейнер и само перекрестие */
@@ -144,19 +159,17 @@ const char index_html[] PROGMEM = R"rawliteral(
     /* Красная точка */
     .dot {
       position: absolute;
-      /* Ставим по центру (100,100), чтобы (0,0) на уровне left=0, top=0 не мешало */
       left: 100px;  
       top: 100px;
-      margin: -5px 0 0 -5px; /* смещение на половину диаметра, чтобы центр совпадал */
+      margin: -5px 0 0 -5px;
       width: 10px;
       height: 10px;
       background-color: red;
       border-radius: 50%;
-      /* По умолчанию без лишних transform */
       transform: none;
     }
   </style>
-<script>
+  <script>
     async function refreshValues() {
       const response = await fetch('/values');
       const data = await response.json();
@@ -173,25 +186,28 @@ const char index_html[] PROGMEM = R"rawliteral(
       document.getElementById('DeadBandX').innerText = data.DeadBandX;
       document.getElementById('DeadBandY').innerText = data.DeadBandY;
       document.getElementById('btwnMeasure').innerText = data.btwnMeasure;
-      document.getElementById('AllowMovingSwitch').checked = !data.AllowMoving;
-      document.getElementById('AllowMoving').innerText = data.AllowMoving ? "Enabled" : "Disabled";
+
+      // Инвертированная логика для чекбокса: Emergency Stop = !AllowMoving
+      //document.getElementById('AllowMovingSwitch').checked = !data.AllowMoving;
+
+      // Обновляем надпись (Enabled/Disabled)
+      //document.getElementById('AllowMoving').innerText = data.AllowMoving ? "Enabled" : "Disabled";
       
       // Обновляем положение красной точки
       const dot = document.querySelector('.dot');
       if (dot) {
         const maxOffset = 100.0;
         const maxValue = 4095.0;
-        const k = 4.0; // Увеличиваем если надо увеличить масштаб
+        const k = 4.0; // Увеличиваем, если надо увеличить масштаб
 
-        const xOffset = (data.DX / maxValue) * maxOffset*k;
-        const yOffset = -(data.DY / maxValue) * maxOffset*k;
+        let xOffset = (data.DX / maxValue) * maxOffset*k;
+        let yOffset = -(data.DY / maxValue) * maxOffset*k;
 
         if (xOffset >  100) xOffset =  100;
         if (xOffset < -100) xOffset = -100;
         if (yOffset >  100) yOffset =  100;
         if (yOffset < -100) yOffset = -100;
 
-        // Меняем transform: изначально точка стоит в (100,100) (через left/top)
         dot.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
       }
     }
@@ -200,46 +216,41 @@ const char index_html[] PROGMEM = R"rawliteral(
       const input = document.getElementById('maxSpeedXInput').value;
       await fetch(`/updateMaxSpeedX?value=${input}`);
     }
-
     async function updateAccelerationX() {
       const input = document.getElementById('accelerationXInput').value;
       await fetch(`/updateAccelerationX?value=${input}`);
     }
-
     async function updateMaxSpeedY() {
       const input = document.getElementById('maxSpeedYInput').value;
       await fetch(`/updateMaxSpeedY?value=${input}`);
     }
-
     async function updateAccelerationY() {
       const input = document.getElementById('accelerationYInput').value;
       await fetch(`/updateAccelerationY?value=${input}`);
     }
-
     async function updateDeadBandX() {
       const input = document.getElementById('DeadBandXInput').value;
       await fetch(`/updateDeadBandX?value=${input}`);
     }
-
     async function updateDeadBandY() {
       const input = document.getElementById('DeadBandYInput').value;
       await fetch(`/updateDeadBandY?value=${input}`);
     }
-
     async function updateBtwnMeasure() {
       const input = document.getElementById('btwnMeasureInput').value;
       await fetch(`/updateBtwnMeasure?value=${input}`);
     }
 
     async function updateAllowMoving() {
+      // Галочка = EmergencyStop включён, значит AllowMoving = false -> value=0
+      // Нет галочки = AllowMoving = true -> value=1
       const input = document.getElementById('AllowMovingSwitch').checked;
       await fetch(`/updateAllowMoving?value=${input ? 0 : 1}`);
     }
 
     // Обновляем каждые 50 мс
     setInterval(refreshValues, 50);
-</script>
-
+  </script>
 </head>
 <body>
   <div class="container">
@@ -259,28 +270,32 @@ const char index_html[] PROGMEM = R"rawliteral(
     </div>
 
     <div class="row">
-      <strong>DX:</strong> <span id="DX">0</span>
+      <strong>DX (R-L):</strong> <span id="DX">0</span>
     </div>
     <div class="row">
-      <strong>DY:</strong> <span id="DY">0</span>
+      <strong>DY (U-D):</strong> <span id="DY">0</span>
     </div>
 
     <div class="crosshair-container">
       <div class="crosshair">
         <div class="horizontal-line"></div>
         <div class="vertical-line"></div>
-        <!-- Красная точка, изначально по центру (100,100) -->
         <div class="dot"></div>
       </div>
     </div>
 
-    <div class="row">
-      <strong>Emergency Stop:</strong> 
+    <!-- NEW: отдельный контейнер по центру для Emergency Stop -->
+    <div class="emergency-container">
+      <h2>Emergency Stop</h2>
       <input type="checkbox" id="AllowMovingSwitch" onchange="updateAllowMoving()">
     </div>
-    <div class="row">
-      <strong>AllowMoving:</strong> <span id="AllowMoving">Enabled</span>
-    </div>
+
+<!-- 
+<div class="row">
+  <strong>AllowMoving:</strong> 
+  <span id="AllowMoving">Enabled</span>
+</div>
+-->
 
     <div class="row">
       <strong>Max Speed X:</strong> <span id="maxSpeedX">0.0</span>
@@ -344,7 +359,6 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 void setup() {
   Serial.begin(9600);
-
   pinMode(button, INPUT_PULLUP);
 
   // Настройка Wi-Fi точки доступа
@@ -390,7 +404,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateAccelerationX", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       accelerationX = request->getParam("value")->value().toFloat();
@@ -399,7 +412,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateMaxSpeedY", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       maxSpeedY = request->getParam("value")->value().toFloat();
@@ -408,7 +420,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateAccelerationY", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       accelerationY = request->getParam("value")->value().toFloat();
@@ -417,7 +428,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateDeadBandX", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       DeadBandX = request->getParam("value")->value().toInt();
@@ -426,7 +436,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateDeadBandY", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       DeadBandY = request->getParam("value")->value().toInt();
@@ -435,7 +444,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateBtwnMeasure", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       btwnMeasure = request->getParam("value")->value().toInt();
@@ -444,7 +452,6 @@ void setup() {
     }
     request->send(200, "text/plain", "OK");
   });
-
   server.on("/updateAllowMoving", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (request->hasParam("value")) {
       AllowMoving = request->getParam("value")->value().toInt() == 1;
@@ -481,7 +488,7 @@ void loop() {
     UvalueWeb = Uvalue;
     DvalueWeb = Dvalue;
 
-    // Выводим результаты в Serial Monitor (для отладки)
+    // Вывод в Serial (для отладки)
     Serial.print("RA: ");
     Serial.print(RvalueWeb);
     Serial.print("\tLA: ");
