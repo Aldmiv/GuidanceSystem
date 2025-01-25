@@ -46,7 +46,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Guidance System</title>
+  <title>Tracking System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
   <style>
     body {
@@ -173,8 +173,9 @@ const char index_html[] PROGMEM = R"rawliteral(
       document.getElementById('DeadBandX').innerText = data.DeadBandX;
       document.getElementById('DeadBandY').innerText = data.DeadBandY;
       document.getElementById('btwnMeasure').innerText = data.btwnMeasure;
+      document.getElementById('AllowMovingSwitch').checked = !data.AllowMoving;
       document.getElementById('AllowMoving').innerText = data.AllowMoving ? "Enabled" : "Disabled";
-
+      
       // Обновляем положение красной точки
       const dot = document.querySelector('.dot');
       if (dot) {
@@ -232,7 +233,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
     async function updateAllowMoving() {
       const input = document.getElementById('AllowMovingSwitch').checked;
-      await fetch(`/updateAllowMoving?value=${input ? 1 : 0}`);
+      await fetch(`/updateAllowMoving?value=${input ? 0 : 1}`);
     }
 
     // Обновляем каждые 50 мс
@@ -242,7 +243,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 </head>
 <body>
   <div class="container">
-    <h1>Guidance System</h1>
+    <h1>Tracking System</h1>
 
     <div class="row">
       <strong>Right Antenna:</strong> <span id="RA">0</span>
