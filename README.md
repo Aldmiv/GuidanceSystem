@@ -4,13 +4,13 @@ OnlyX - движение только по горизонтали (версия 
 
 OnlyX_setupY - Инициализирован мотор по Y. Добавлен начальный прогон в setup для установки по Y
 
-GuidanceSystemDev - Код в разработке
-
 PlotRadar - Вывод ацп на графики
 
 XDevScanY - Движется по x, сканирует по y через интервал
 
 AllScanByTime - Движется по x, сканирует по y через интервал но через промежуток времени а не по шагам (плавнее)
+
+GuidanceSystemDev - Код в разработке
 
 Libraries:
 AccelStepper - V1.64
@@ -24,6 +24,8 @@ ESP:
 4ADC_serial_web_point_input - вывод значений с 4х каналов АЦП в serial и в браузер. Возможность изменять переменные
 
 4ADC_serial_web_point_input_switch - web новое управление
+
+4ADC_serial_web_point_input_switch_crosshair - перекрестие
 
 Libraries and boards:
 
