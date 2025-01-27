@@ -27,8 +27,7 @@ int DeadBandY = 20;
 
 int btwnMeasure = 60;              // Периодичность считывания (мс)
 unsigned long previousMillis = 0;  // Для периодического обновления логики работы моторов
-
-//bool AllowMoving = true;
+bool AllowMoving = true;
 
 // Переменная логики для оси X:
 //   0 - стоп, 1 - LEFT (минус), 2 - RIGHT (плюс)
@@ -87,7 +86,7 @@ void FirstYSetup() {
 
   stepperY.setAcceleration(300);
   stepperY.moveTo(-999999);
-  while (digitalRead(button) == LOW) {
+  while (digitalRead(button) == HIGH) {
     stepperY.run();
   }
 
@@ -116,7 +115,7 @@ void FirstYSetup() {
 void setup() {
   Serial.begin(9600);
   Serial.println("Start");
-  pinMode(button, INPUT);
+  pinMode(button, INPUT_PULLUP);
 
   stepperX.setMaxSpeed(maxSpeedX);
   stepperX.setAcceleration(accelerationX);
@@ -146,30 +145,40 @@ void loop() {
     Serial.println(Dvalue);
   }
 
-  switch (moveLogicX) {
-    case 0:
-      stepperX.moveTo(stepperX.currentPosition());
-      break;
-    case 1:
-      stepperX.moveTo(1000000);
-      break;
-    case 2:
-      stepperX.moveTo(-1000000);
-      break;
+  if (AllowMoving) { // Условие при котором мотор не движется
+    switch (moveLogicX) {
+      case 0:
+        stepperX.moveTo(stepperX.currentPosition());
+        break;
+      case 1:
+        stepperX.moveTo(1000000);
+        break;
+      case 2:
+        stepperX.moveTo(-1000000);
+        break;
+    }
+    stepperX.run();
+  } else {
+    stepperX.moveTo(stepperX.currentPosition());
+    stepperX.run();
   }
-  stepperX.run();
 
-  // switch (moveLogicY) {
-  //   case 0:
-  //     stepperY.moveTo(stepperY.currentPosition());
-  //     break;
-  //   case 1:
-  //     stepperY.moveTo(1000000);
-  //     break;
-  //   case 2:
-  //     stepperY.moveTo(-1000000);
-  //     break;
-  // }
-  // stepperY.run();
+  if (digitalRead(button) && AllowMoving) { // Условие при котором мотор не движется
+    switch (moveLogicY) {
+      case 0:
+        stepperY.moveTo(stepperY.currentPosition());
+        break;
+      case 1:
+        stepperY.moveTo(1000000);
+        break;
+      case 2:
+        stepperY.moveTo(-1000000);
+        break;
+    }
+    stepperY.run();
+  } else {
+    stepperY.moveTo(stepperY.currentPosition());
+    stepperY.run();
+  }
 
 }
