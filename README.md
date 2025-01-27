@@ -27,6 +27,10 @@ ESP:
 
 4ADC_serial_web_point_input_switch_crosshair - перекрестие
 
+FirstMovingTest - только движение без веба
+
+MovingWithWeb - движение + веб
+
 Libraries and boards:
 
 esp32 by Espressif Systems - V3.1.1
