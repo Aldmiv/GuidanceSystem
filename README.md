@@ -15,6 +15,8 @@ GuidanceSystemDev - Код в разработке
 Libraries:
 AccelStepper - V1.64
 
+Библиотеки в папке Arduino
+
 ESP:
 
 4ADC_serial - вывод значений с 4х каналов АЦП в serial
@@ -34,3 +36,5 @@ MovingWithWeb - движение + веб
 Libraries and boards:
 
 esp32 by Espressif Systems - V3.1.1
+
+Библиотеки в папке ESP
