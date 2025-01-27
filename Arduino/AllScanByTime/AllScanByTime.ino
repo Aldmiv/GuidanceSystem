@@ -21,7 +21,7 @@ int moveLogicY = 0;
 // ===== Потенциометр для отладки =====
 int potentY = 0;  // Читаем на A3
 
-unsigned long previousMillis = 0;  
+unsigned long previousMillis = 0;  // Для периодического обновления логики работы моторов
 const unsigned long btwnMeasure = 60; // Периодичность считывания (мс)
 
 // ===== Параметры шагового мотора (ось X) =====

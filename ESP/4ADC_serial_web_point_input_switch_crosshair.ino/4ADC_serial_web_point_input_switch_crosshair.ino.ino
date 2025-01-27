@@ -38,7 +38,7 @@ int btwnMeasure = 60;  // Периодичность считывания (мс)
 bool AllowMoving = true;
 
 // Таймер для обновления значений
-unsigned long previousMillis = 0;
+unsigned long previousMillisWeb = 0;
 const unsigned long interval = 100;  // Интервал обновления значений для веба
 
 // HTML веб-страницы
@@ -479,8 +479,8 @@ void loop() {
 
   // Обновление значений для вывода каждые interval мс
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
+  if (currentMillis - previousMillisWeb >= interval) {
+    previousMillisWeb = currentMillis;
 
     // Копируем значения в переменные для вывода
     RvalueWeb = Rvalue;
