@@ -134,6 +134,16 @@ void loop() {
     previousMillis = currentMillis;
     CalculateDirectionX();
     CalculateDirectionY();
+
+    // Вывод в Serial (для отладки)
+    Serial.print("RA: ");
+    Serial.print(Rvalue);
+    Serial.print("\tLA: ");
+    Serial.print(Lvalue);
+    Serial.print("\tUA: ");
+    Serial.print(Uvalue);
+    Serial.print("\tDA: ");
+    Serial.println(Dvalue);
   }
 
   switch (moveLogicX) {
