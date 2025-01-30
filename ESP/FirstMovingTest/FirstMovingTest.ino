@@ -22,8 +22,8 @@ volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0;  // Непреры�
 int DX = 0;
 int DY = 0;
 
-int DeadBandX = 20;
-int DeadBandY = 20;
+int DeadBandX = 150;
+int DeadBandY = 150;
 
 int btwnMeasure = 60;              // Периодичность считывания (мс)
 unsigned long previousMillis = 0;  // Для периодического обновления логики работы моторов
@@ -45,8 +45,8 @@ float accelerationX = 2900.0;
 AccelStepper stepperX(AccelStepper::DRIVER, X_PulPlus, X_DirPlus);
 
 // ===== Параметры шагового мотора (ось Y) =====
-float maxSpeedY = 2500.0;
-float accelerationY = 2000.0;
+float maxSpeedY = 2000.0;
+float accelerationY = 1800.0;
 AccelStepper stepperY(AccelStepper::DRIVER, Y_PulPlus, Y_DirPlus);
 
 void CalculateDirectionX() {

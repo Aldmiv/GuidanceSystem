@@ -1,8 +1,8 @@
-// Входы АЦП
-const int potPin1 = 34;
-const int potPin2 = 35;
-const int potPin3 = 36;
-const int potPin4 = 39;
+// Входы АЦП для антенн
+const int RA = 36;  // Правая антенна
+const int LA = 39;  // Левая антенна
+const int UA = 34;  // Верхняя антенна
+const int DA = 35;  // Нижняя антенна
 
 void setup() {
   Serial.begin(9600);
@@ -10,19 +10,19 @@ void setup() {
 
 void loop() {
   // Считываем значения с четырёх потенциометров
-  int val1 = analogRead(potPin1);
-  int val2 = analogRead(potPin2);
-  int val3 = analogRead(potPin3);
-  int val4 = analogRead(potPin4);
+  int val1 = analogRead(RA);
+  int val2 = analogRead(LA);
+  int val3 = analogRead(UA);
+  int val4 = analogRead(DA);
 
   // Выводим результаты в монитор порта
-  Serial.print("P1: ");
+  Serial.print("RA: ");
   Serial.print(val1);
-  Serial.print("\tP2: ");
+  Serial.print("\tLA: ");
   Serial.print(val2);
-  Serial.print("\tP3: ");
+  Serial.print("\tUA: ");
   Serial.print(val3);
-  Serial.print("\tP4: ");
+  Serial.print("\tDA: ");
   Serial.println(val4);
 
   // Делаем небольшую задержку для удобства наблюдения

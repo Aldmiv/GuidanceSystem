@@ -562,9 +562,9 @@ void setup() {
   stepperY.setMaxSpeed(maxSpeedY);
   stepperY.setAcceleration(accelerationY);
   stepperY.setCurrentPosition(0);
-  //FirstYSetup();
+  stepperY.moveTo(stepperY.currentPosition());
+  FirstYSetup();
 }
-
 
 void loop() {
 
@@ -651,4 +651,5 @@ void loop() {
     stepperY.moveTo(stepperY.currentPosition());
     stepperY.run();
   }
+
 }
