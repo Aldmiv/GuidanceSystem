@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <AccelStepper.h>
+#include <RunningMedian.h>
 
 // Входы АЦП для антенн
 const int RA = 36;  // Правая антенна
@@ -16,10 +17,13 @@ const int Y_DirPlus = 19;
 const int button = 15;  // Кнопка
 
 // Для фильтра
-float previousR[6] = {0, 0, 0, 0, 0, 0};
-float previousL[6] = {0, 0, 0, 0, 0, 0};
-float previousU[6] = {0, 0, 0, 0, 0, 0};
-float previousD[6] = {0, 0, 0, 0, 0, 0};
+RunningMedian filterR(10); // Буфер на 10 значений
+RunningMedian filterL(10); // Буфер на 10 значений
+RunningMedian filterU(10); // Буфер на 10 значений
+RunningMedian filterD(10); // Буфер на 10 значений
+
+// Значения сигналов с антенн до фильтра
+volatile int RvalueBeforeFilter = 0, LvalueBeforeFilter = 0, UvalueBeforeFilter = 0, DvalueBeforeFilter = 0;  // Непрерывные данные
 
 // Значения сигналов с антенн
 volatile int Rvalue = 0, Lvalue = 0, Uvalue = 0, Dvalue = 0;  // Непрерывные данные
@@ -56,25 +60,6 @@ float accelerationY = 1800.0;
 AccelStepper stepperY(AccelStepper::DRIVER, Y_PulPlus, Y_DirPlus);
 
 void CalculateDirectionX() {
-
-  // Rvalue = analogRead(RA);
-  // Lvalue = analogRead(LA);
-
-  previousR[0] = analogRead(RA);
-  previousL[0] = analogRead(LA);
-  previousR[1] = analogRead(RA);
-  previousL[1] = analogRead(LA);
-  previousR[2] = analogRead(RA);
-  previousL[2] = analogRead(LA);
-  previousR[3] = analogRead(RA);
-  previousL[3] = analogRead(LA);
-  previousR[4] = analogRead(RA);
-  previousL[4] = analogRead(LA);
-  previousR[5] = analogRead(RA);
-  previousL[5] = analogRead(LA);
-  Rvalue = (previousR[0] + previousR[1] + previousR[2] + previousR[3] + previousR[4] + previousR[5])/6;
-  Lvalue = (previousL[0] + previousL[1] + previousL[2] + previousL[3] + previousL[4] + previousL[5])/6;
-
   // RvalueWeb = Rvalue;
   // LvalueWeb = Lvalue;
   // // Расчёт разницы для веба
@@ -92,24 +77,6 @@ void CalculateDirectionX() {
 }
 
 void CalculateDirectionY() {
-  // Uvalue = analogRead(UA);
-  // Dvalue = analogRead(DA);
-
-  previousU[0] = analogRead(UA);
-  previousD[0] = analogRead(DA);
-  previousU[1] = analogRead(UA);
-  previousD[1] = analogRead(DA);
-  previousU[2] = analogRead(UA);
-  previousD[2] = analogRead(DA);
-  previousU[3] = analogRead(UA);
-  previousD[3] = analogRead(DA);
-  previousU[4] = analogRead(UA);
-  previousD[4] = analogRead(DA);
-  previousU[5] = analogRead(UA);
-  previousD[5] = analogRead(DA);
-  Uvalue = (previousU[0] + previousU[1] + previousU[2] + previousU[3] + previousU[4] + previousU[5])/6;
-  Dvalue = (previousD[0] + previousD[1] + previousD[2] + previousD[3] + previousD[4] + previousD[5])/6;
-
 
   // UvalueWeb = Uvalue;
   // DvalueWeb = Dvalue;
@@ -180,6 +147,21 @@ void setup() {
 
 
 void loop() {
+
+  RvalueBeforeFilter = analogRead(RA);
+  LvalueBeforeFilter = analogRead(LA);
+  filterR.add(RvalueBeforeFilter);
+  filterL.add(LvalueBeforeFilter);
+  Rvalue = filterR.getMedian();
+  Lvalue = filterL.getMedian();
+
+  UvalueBeforeFilter = analogRead(UA);
+  DvalueBeforeFilter = analogRead(DA);
+  filterU.add(UvalueBeforeFilter);
+  filterD.add(DvalueBeforeFilter);
+  Uvalue = filterU.getMedian();
+  Dvalue = filterD.getMedian();
+
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= btwnMeasure) {
@@ -187,15 +169,15 @@ void loop() {
     CalculateDirectionX();
     CalculateDirectionY();
 
-    // Вывод в Serial (для отладки)
-    Serial.print("RA: ");
-    Serial.print(Rvalue);
-    Serial.print("\t\tLA: ");
-    Serial.print(Lvalue);
-    Serial.print("\t\tUA: ");
-    Serial.print(Uvalue);
-    Serial.print("\t\tDA: ");
-    Serial.println(Dvalue);
+    // // Вывод в Serial (для отладки)
+    // Serial.print("RA: ");
+    // Serial.print(Rvalue);
+    // Serial.print("\tLA: ");
+    // Serial.print(Lvalue);
+    // Serial.print("\tUA: ");
+    // Serial.print(Uvalue);
+    // Serial.print("\tDA: ");
+    // Serial.println(Dvalue);
   }
 
   if (AllowMoving) { // Условие при котором мотор не движется
