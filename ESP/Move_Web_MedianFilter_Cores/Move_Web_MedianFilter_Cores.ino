@@ -56,7 +56,7 @@ int DY = 0;
 int DeadBandX = 100;
 int DeadBandY = 100;
 
-int btwnMeasure = 30;              // Периодичность считывания (мс)
+int btwnMeasure = 60;              // Периодичность считывания (мс)
 unsigned long previousMillis = 0;  // Для периодического обновления логики
 bool AllowMoving = true;
 
@@ -401,7 +401,7 @@ void everythingElseTask(void *pvParameters) {
 
 void setup() {
   // ----- Настройки последовательного порта -----
-  Serial.begin(9600);
+  //Serial.begin(9600);
   Serial.println("Start");
 
   pinMode(button, INPUT_PULLUP);
@@ -524,7 +524,7 @@ void setup() {
   stepperY.moveTo(stepperY.currentPosition());
 
   // Если нужна первоначальная калибровка
-  // FirstYSetup();
+  //FirstYSetup();
 
   // ----- Создаём задачу на core 0 -----
   xTaskCreatePinnedToCore(
@@ -543,41 +543,41 @@ void setup() {
 // Здесь оставляем только движение шаговых моторов.
 // -------------------------------------------------------------------------------------
 void loop() {
-  // Логика оси X
-  if (AllowMoving) {
-    switch (moveLogicX) {
-      case 0:
-        stepperX.moveTo(stepperX.currentPosition());
-        break;
-      case 1:
-        stepperX.moveTo(1000000);
-        break;
-      case 2:
-        stepperX.moveTo(-1000000);
-        break;
-    }
-  } else {
-    // Если движению нельзя продолжаться, останавливаем шаговик X
-    stepperX.moveTo(stepperX.currentPosition());
-  }
-  stepperX.run();
+  // // Логика оси X
+  // if (AllowMoving) {
+  //   switch (moveLogicX) {
+  //     case 0:
+  //       stepperX.moveTo(stepperX.currentPosition());
+  //       break;
+  //     case 1:
+  //       stepperX.moveTo(1000000);
+  //       break;
+  //     case 2:
+  //       stepperX.moveTo(-1000000);
+  //       break;
+  //   }
+  // } else {
+  //   // Если движению нельзя продолжаться, останавливаем шаговик X
+  //   stepperX.moveTo(stepperX.currentPosition());
+  // }
+  // stepperX.run();
 
-  // Логика оси Y + учёт кнопки
-  if (digitalRead(button) && AllowMoving) {
-    switch (moveLogicY) {
-      case 0:
-        stepperY.moveTo(stepperY.currentPosition());
-        break;
-      case 1:
-        stepperY.moveTo(1000000);
-        break;
-      case 2:
-        stepperY.moveTo(-1000000);
-        break;
-    }
-  } else {
-    // Или кнопка нажата, или движение запрещено
-    stepperY.moveTo(stepperY.currentPosition());
-  }
-  stepperY.run();
+  // // Логика оси Y + учёт кнопки
+  // if (digitalRead(button) && AllowMoving) {
+  //   switch (moveLogicY) {
+  //     case 0:
+  //       stepperY.moveTo(stepperY.currentPosition());
+  //       break;
+  //     case 1:
+  //       stepperY.moveTo(1000000);
+  //       break;
+  //     case 2:
+  //       stepperY.moveTo(-1000000);
+  //       break;
+  //   }
+  // } else {
+  //   // Или кнопка нажата, или движение запрещено
+  //   stepperY.moveTo(stepperY.currentPosition());
+  // }
+  // stepperY.run();
 }
