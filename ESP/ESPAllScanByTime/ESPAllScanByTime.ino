@@ -9,7 +9,7 @@
 
 int Rvalue = 0;  
 int Lvalue = 0;  
-int DeadBand = 200;
+int DeadBand = 3000;
 
 // Переменная логики для оси X:
 //   0 - стоп, 1 - LEFT (минус), 2 - RIGHT (плюс)
@@ -35,8 +35,8 @@ AccelStepper stepperX(AccelStepper::DRIVER, X_PulPlus, X_DirPlus);
 // ===== Параметры шагового мотора (ось Y) =====
 const int Y_PulPlus      = 23;    
 const int Y_DirPlus      = 19;    
-const float maxSpeedY     = 2500; 
-const float accelerationY = 2000; 
+const float maxSpeedY     = 500; 
+const float accelerationY = 500; 
 AccelStepper stepperY(AccelStepper::DRIVER, Y_PulPlus, Y_DirPlus);
 
 // ===== Параметры сканирования =====
@@ -95,7 +95,7 @@ void startVerticalScan() {
 
 void handleVerticalScan() {
   if (isReturningToStart) {
-    if (digitalRead(button) == HIGH) {
+    if (digitalRead(button) == LOW) {
       Serial.println("DEBUG: Reached start position, beginning scan");
       isReturningToStart = false;
 
@@ -223,43 +223,43 @@ void loop() {
     CalculateDirectionY();
   }
 
-  // if (moveLogicX == 0) {
-  //   if (idleStartTime == 0) {
-  //     idleStartTime = currentMillis;
-  //   } else if (currentMillis - idleStartTime >= idleScanThreshold && !isVerticalScanActive && !isReturningToStart && !scanCondition) {
-  //     idleStartTime = 0;
-  //     Serial.println("DEBUG: Idle threshold reached, starting scan");
-  //     startVerticalScan();
-  //   }
-  // } else {
-  //   idleStartTime = 0;
-  // }
+  if (moveLogicX == 0) {
+    if (idleStartTime == 0) {
+      idleStartTime = currentMillis;
+    } else if (currentMillis - idleStartTime >= idleScanThreshold && !isVerticalScanActive && !isReturningToStart && !scanCondition) {
+      idleStartTime = 0;
+      Serial.println("DEBUG: Idle threshold reached, starting scan");
+      startVerticalScan();
+    }
+  } else {
+    idleStartTime = 0;
+  }
 
-  // if (!isVerticalScanActive && !isReturningToStart && scanCondition && (currentMillis - lastScanTime >= verticalScanPeriod)) {
-  //   lastScanTime = currentMillis;
-  //   Serial.println("DEBUG: Time-based scan trigger");
-  //   startVerticalScan();
-  // }
+  if (!isVerticalScanActive && !isReturningToStart && scanCondition && (currentMillis - lastScanTime >= verticalScanPeriod)) {
+    lastScanTime = currentMillis;
+    Serial.println("DEBUG: Time-based scan trigger");
+    startVerticalScan();
+  }
 
-  // if (!isVerticalScanActive && !isReturningToStart) {
-  //   switch (moveLogicX) {
-  //     case 0:
-  //       stepperX.moveTo(stepperX.currentPosition());
-  //       break;
-  //     case 1:
-  //       stepperX.moveTo(1000000);
-  //       break;
-  //     case 2:
-  //       stepperX.moveTo(-1000000);
-  //       break;
-  //   }
-  //   stepperX.run();
-  // } else {
-  //   stepperX.moveTo(stepperX.currentPosition());
-  //   stepperX.run();
-  // }
+  if (!isVerticalScanActive && !isReturningToStart) {
+    switch (moveLogicX) {
+      case 0:
+        stepperX.moveTo(stepperX.currentPosition());
+        break;
+      case 1:
+        stepperX.moveTo(1000000);
+        break;
+      case 2:
+        stepperX.moveTo(-1000000);
+        break;
+    }
+    stepperX.run();
+  } else {
+    stepperX.moveTo(stepperX.currentPosition());
+    stepperX.run();
+  }
 
-  // stepperY.run();
+  stepperY.run();
 
-  // handleVerticalScan();
+  handleVerticalScan();
 }
